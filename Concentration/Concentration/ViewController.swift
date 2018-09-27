@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    lazy var game:Concentration = Concentration(numberOfPairsOfCards: (cardButtons.count+1)/2)
+    lazy var game:Concentration = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
     var flipCount = 0 {
         didSet {
             flipLabel.text = "Flips:\(flipCount)"
@@ -20,15 +20,15 @@ class ViewController: UIViewController {
     @IBAction func touchCard(_ sender: UIButton) {
          flipCount = flipCount + 1;
         if let cardNumber = cardButtons.index(of: sender){
-            game.chooseCard(at: cardNumber){}
-            flipCard(withEmoji: emojiChoices[cardNumber], on: sender)
+            game.chooseCard(at: cardNumber)
             updateViewFromModel()
         }else{
             print("the chosen card was not in it")
         }
     }
     func updateViewFromModel(){
-        for index in cardButtons.indices{
+        for index in cardButtons.indices {
+            print("card index \(index)")
             let button = cardButtons[index]
             let card = game.cards[index]
             if card.isFaceUp {
@@ -42,8 +42,13 @@ class ViewController: UIViewController {
         }
     }
     var emojiChoices = ["👻","😱","💀","🎃","🧜‍♀️","🐶","🦊","🦆","🐿","🇨🇳"]
+    var emoji = [Int : String]()
     func emoji(for card:Card)->String{
-        return "?"
+        if emoji[card.identifier] == nil,emojiChoices.count > 0{
+            let ramdomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
+            emoji[card.identifier] = emojiChoices.remove(at: ramdomIndex)
+        }
+        return emoji[card.identifier] ?? "?"
     }
 }
 
